@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spot the Features</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-size: 1em;
+    }
+
+    :root {
+      --bg-dark: #1f1f1f;
+      --bg-medium: #2a2a2a;
+      --bg-light: #383838;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --accent-color: #007bff;
+      --accent-hover: #0056b3;
+      --success-color: #28a745;
+      --success-hover: #218838;
+      --danger-color: #dc3545;
+      --danger-hover: #c82333;
+      --warning-color: #ffc107;
+      --border-color: #444;
+      --border-radius: 6px;
+    }
+
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+    }
+
+    canvas {
+      user-select: none;
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+
+    .container {
+      padding: 10px;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      display: block;
+      text-align: center;
+      background: var(--bg-medium);
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .with-rounded-border {
+      border-radius: 10px;
+      padding: 2px;
+      border-width: 2px;
+      border-style: solid;
+      border-color: rgb(90, 90, 90);
+    }
+
+    hr {
+      height: 1px;
+      border: 0;
+      background-color: rgb(90, 90, 90);
+    }
+
+    h1 {
+      font-size: 1.6em;
+      color: var(--text-primary);
+      margin: 0 auto;
+    }
+
+    sup, sub {
+      font-size: 0.9em;
+    }
+
+    h2 {
+      font-size: 1.3em;
+      color: var(--text-secondary);
+    }
+
+    h3 {
+      font-size: 1.1em;
+      color: var(--text-secondary);
+    }
+
+    a {
+      text-decoration: none;
+      font-weight: bold;
+      color: #555;
+    }
+
+    a:hover {
+      color: #aaa;
+    }
+
+    label {
+      text-align: center;
+      display: block;
+      color: var(--text-secondary);
+      margin: 8px 0 3px;
+    }
+
+    label>span {
+      display: block;
+    }
+
+    select,
+    input {
+      vertical-align: middle;
+      text-align: center;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+      display: block;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      background: var(--bg-light);
+      color: var(--text-primary);
+      padding-top: 7px;
+      padding-bottom: 7px;
+      font-family: inherit;
+    }
+
+    input[type="checkbox"],
+    input[type="radio"] {
+      transform: scale(1.3);
+      margin: 0;
+    }
+
+    button {
+      font-family: inherit;
+      padding: 10px 15px;
+      border: 1px solid transparent;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    button:active {
+      opacity: 0.8;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .controls,
+    .settings,
+    .game-area,
+    .history {
+      margin: 15px auto;
+      padding: 10px;
+      background: var(--bg-light);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+    }
+
+    .settings-block {
+      margin: 10px auto;
+      padding: 8px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .settings-block:first-child {
+      border-top: none;
+    }
+
+    .settings-block input[type="number"],
+    .settings-block select {
+      margin: 5px auto;
+      padding: 7px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      background: var(--bg-medium);
+      color: var(--text-primary);
+      text-align: center;
+    }
+
+    button {
+      padding: 8px 12px;
+      margin: 5px;
+      border: none;
+      border-radius: var(--border-radius);
+      background: var(--accent-color);
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    button:hover:not(:disabled) {
+      background: var(--accent-hover);
+    }
+
+    button:disabled {
+      background: var(--border-color);
+      color: var(--text-secondary);
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .btn-danger {
+      background: var(--danger-color);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: #c82333;
+    }
+
+    .btn-hint {
+      color: var(--bg-dark);
+      background: var(--warning-color);
+    }
+
+    .btn-hint:hover:not(:disabled) {
+      background: #7c6b27;
+    }
+
+    .btn-next {
+      background: var(--success-color);
+    }
+
+    .btn-next:hover:not(:disabled) {
+      background: #218838;
+    }
+
+    .btn-feedback-correct {
+      background: var(--success-color) !important;
+    }
+
+    .btn-feedback-incorrect {
+      background: var(--danger-color) !important;
+    }
+
+    .game-board {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 10px auto;
+    }
+
+    .item-display {
+      display: inline-flex;
+      flex-direction: column;
+      padding: 3px;
+      border: 2px solid transparent;
+      border-radius: var(--border-radius);
+      background: var(--bg-dark);
+      cursor: pointer;
+      width: clamp(150px, calc(33% - 10px), 300px);
+      height: 320px;
+      text-align: center;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .item-display img.item-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: var(--border-radius);
+    }
+
+    .item-display p.item-description {
+      font-size: 1em;
+      color: var(--text-primary);
+      margin: 0 auto 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .item-display p.item-tags {
+      font-size: 0.8em;
+      color: var(--text-secondary);
+      word-wrap: break-word;
+      margin: 0 auto 0;
+      width: 100%;
+      max-height: 60px;
+    }
+
+    .item-display.state-image-only img.item-image {
+      flex: 1 1 auto;
+    }
+
+    .item-display.state-image-only .item-description,
+    .item-display.state-image-only .item-tags {
+      display: none;
+    }
+
+    .item-display.state-desc-only .item-description {
+      flex: 1 1 auto;
+    }
+
+    .item-display.state-desc-only .item-image,
+    .item-display.state-desc-only .item-tags {
+      display: none;
+    }
+
+    .item-display.state-analysis .item-tags {
+      display: block;
+    }
+
+    .game-mode-closestFurthest .candidate-item,
+    .game-mode-closestFurthest .memorized-hint-item {
+      width: clamp(280px, 80%, 500px);
+      margin-bottom: 10px;
+    }
+
+    .game-mode-closestFurthest .item-display {
+      width: 100%;
+      height: auto;
+      min-height: 300px;
+    }
+
+    .item-display.selected {
+      border-color: var(--accent-color);
+      border-width: 3px;
+    }
+
+    .item-display.correct {
+      border-color: var(--success-color);
+      border-width: 3px;
+    }
+
+    .item-display.correct-set-temp {
+      border: 3px solid var(--success-color) !important;
+      box-shadow: 0 0 10px var(--success-color);
+    }
+
+    .status-message {
+      margin: 10px auto;
+      font-size: 1.1em;
+    }
+
+    .status-correct {
+      color: var(--success-color);
+    }
+
+    .status-incorrect {
+      color: var(--danger-color);
+    }
+
+    .history-log {
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 10px;
+      background: var(--bg-dark);
+      text-align: left;
+    }
+
+    .history-log p {
+      margin: 3px 0;
+      padding: 3px;
+      border-bottom: 1px dotted var(--border-color);
+      font-size: 0.9em;
+    }
+
+    .history-log p:last-child {
+      border-bottom: none;
+    }
+
+    #stopwatchDisplayContainer {
+      margin: 10px auto;
+    }
+
+    #stopwatchDisplay {
+      font-size: 1.2em;
+      color: var(--accent-color);
+      padding: 5px;
+      background-color: var(--bg-light);
+      border-radius: var(--border-radius);
+      display: inline-block;
+    }
+
+    #gameStatusInfo {
+      margin: 8px auto;
+      padding: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+    }
+
+    @media (max-width: 768px) {
+      .item-display {
+        width: clamp(120px, calc(50% - 10px), 250px);
+        height: 280px;
+      }
+
+      .game-mode-closestFurthest .candidate-item,
+      .game-mode-closestFurthest .memorized-hint-item {
+        width: 95%;
+      }
+
+      button {
+        width: calc(50% - 10px);
+      }
+
+      #inGameControls button,
+      .settings-block button {
+        width: calc(100% - 10px);
+      }
+    }
+
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 1.3em;
+      }
+
+      .item-display {
+        width: calc(100% - 10px);
+        height: 250px;
+      }
+
+      button {
+        width: calc(100% - 10px);
+      }
+    }
+  </style>
+  <script type="text/javascript" src="get_images_1.js"></script>
+  <script type="text/javascript" src="get_hierarchy_1.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Spot the Features</h1>
+    <sub>mini</sub>
+
+    <div id="initialControls" class="controls">
+      <button id="startFindSetModeBtn">Mode "Find Set"</button>
+      <button id="startFindAllSetsModeBtn">Mode "Find All Sets"</button>
+      <button id="startClosestFurthestModeBtn">Mode "Closest/Furthest"</button>
+    </div>
+
+    <div id="settingsArea" class="settings">
+      <h2>Settings</h2>
+
+      <div class="settings-block">
+        <h3>"Find Set"</h3>
+        <p>Find trial set with common features.</p>
+        <label for="findSetModeN">Images (4-10):</label>
+        <input type="number" id="findSetModeN" value="6" min="4" max="10">
+        <label for="findSetModeDifficulty">Difficulty:</label>
+        <select id="findSetModeDifficulty">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+        <label for="findSetTrialType">Trial type:</label>
+        <select id="findSetTrialType">
+          <option value="image">Image</option>
+          <option value="description">Description</option>
+          <option value="random_item">Random</option>
+        </select>
+      </div>
+
+      <div class="settings-block">
+        <h3>"Find All Sets"</h3>
+        <p>Find all trial sets with common features.</p>
+        <label for="findAllSetsModeN">Images (4-10):</label>
+        <input type="number" id="findAllSetsModeN" value="6" min="4" max="10">
+        <label for="findAllSetsModeDifficulty">Difficulty:</label>
+        <select id="findAllSetsModeDifficulty">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+        <label for="findAllSetsTrialType">Trial type:</label>
+        <select id="findAllSetsTrialType">
+          <option value="image">Image</option>
+          <option value="description">Description</option>
+          <option value="random_item">Random</option>
+        </select>
+      </div>
+
+      <div class="settings-block">
+        <h3>"Closest/Furthest"</h3>
+        <p>Which trial is closer/further from memorized ones?</p>
+        <label for="closestFurthestModeM">Trials to remember (1-10):</label>
+        <input type="number" id="closestFurthestModeM" value="1" min="1" max="10">
+        <label for="closestFurthestModeK">Rounds (1-1000):</label>
+        <input type="number" id="closestFurthestModeK" value="10" min="1" max="1000">
+        <label for="closestFurthestTrialType">Trial type:</label>
+        <select id="closestFurthestTrialType">
+          <option value="image">Image</option>
+          <option value="description">Description</option>
+          <option value="random_item">Random</option>
+        </select>
+      </div>
+      
+      <button id="defaultSettingsBtn">Default Settings</button>
+      <button id="resetHistoryBtn" class="btn-danger">Reset History</button>
+    </div>
+
+    <div id="gameArea" class="game-area hidden">
+      <div id="stopwatchDisplayContainer" class="hidden">
+        Time: <span id="stopwatchDisplay">00:00:00</span>
+      </div>
+      <div id="gameStatusInfo" class="game-status-info hidden"></div>
+      <div id="gameBoard" class="game-board"></div>
+      <div id="statusMessage" class="status-message"></div>
+
+      <div id="memorizationControls_CF" class="hidden">
+        <p>Memorize item(s). Click "Start Rounds" when ready.</p>
+        <button id="startClosestFurthestRoundsBtn">Start Rounds</button>
+      </div>
+
+      <div id="inGameControls">
+        <div id="findSetModeGameButtons" class="hidden">
+          <button id="clearSelectionBtn_FindSet">Clear Selection</button>
+          <button id="showOneTargetHintBtn_FindSet" class="btn-hint">Hint: Show One Target</button>
+          <button id="showCommonTagsHintBtn_FindSet" class="btn-hint">Hint: Show Common Tags</button>
+        </div>
+        <div id="findAllSetsModeGameButtons" class="hidden">
+          <button id="clearSelectionBtn_FindAllSets">Clear Selection</button>
+          <button id="showHintBtn_FindAllSets" class="btn-hint">Hint: Unfound Set Tags</button>
+        </div>
+        <div id="closestFurthestModeGameButtons" class="hidden">
+          <button id="closestFurthestTopChoiceBtn">Top Item is ...</button>
+          <button id="closestFurthestBottomChoiceBtn">Bottom Item is ...</button>
+          <button id="showMemorizedBtn_CF" class="btn-hint">Hint: Show Memorized</button>
+          <button id="showCandidateTagsBtn_CF" class="btn-hint">Hint: Show Candidate Tags</button>
+        </div>
+        <button id="nextBtn" class="btn-next hidden">Next</button>
+        <button id="stopGameBtn" class="btn-danger">Stop</button>
+      </div>
+    </div>
+
+    <div class="history">
+      <h2>History</h2>
+      <div id="historyLog" class="history-log">
+        <p>No game history yet.</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    class SpotTheFeatures {
+      static SETTINGS_KEYS = {
+        findSetModeN: 'stf_mini_findSetN',
+        findSetModeDifficulty: 'stf_mini_findSetDiff',
+        findSetTrialType: 'stf_mini_findSetTrial',
+        findAllSetsModeN: 'stf_mini_findAllSetsN',
+        findAllSetsModeDifficulty: 'stf_mini_findAllSetsDiff',
+        findAllSetsTrialType: 'stf_mini_findAllSetsTrial',
+        closestFurthestModeM: 'stf_mini_cfModeM',
+        closestFurthestModeK: 'stf_mini_cfModeK',
+        closestFurthestTrialType: 'stf_mini_cfTrialType'
+      };
+
+      static DEFAULT_SETTINGS = {
+        findSetModeN: '6',
+        findSetModeDifficulty: 'easy',
+        findSetTrialType: 'image',
+        findAllSetsModeN: '6',
+        findAllSetsModeDifficulty: 'easy',
+        findAllSetsTrialType: 'image',
+        closestFurthestModeM: '1',
+        closestFurthestModeK: '10',
+        closestFurthestTrialType: 'image'
+      };
+
+      constructor() {
+        this.elements = {
+          startFindSetModeBtn: document.getElementById('startFindSetModeBtn'),
+          startFindAllSetsModeBtn: document.getElementById('startFindAllSetsModeBtn'),
+          startClosestFurthestModeBtn: document.getElementById('startClosestFurthestModeBtn'),
+          stopGameBtn: document.getElementById('stopGameBtn'),
+          nextBtn: document.getElementById('nextBtn'),
+
+          initialControls: document.getElementById('initialControls'),
+          settingsArea: document.getElementById('settingsArea'),
+          gameArea: document.getElementById('gameArea'),
+          gameBoard: document.getElementById('gameBoard'),
+          gameStatusInfo: document.getElementById('gameStatusInfo'),
+          statusMessage: document.getElementById('statusMessage'),
+          history: document.querySelector('.history'),
+          historyLog: document.getElementById('historyLog'),
+
+          defaultSettingsBtn: document.getElementById('defaultSettingsBtn'),
+          resetHistoryBtn: document.getElementById('resetHistoryBtn'),
+
+          stopwatchDisplayContainer: document.getElementById('stopwatchDisplayContainer'),
+          stopwatchDisplay: document.getElementById('stopwatchDisplay'),
+
+          findSetModeN: document.getElementById('findSetModeN'),
+          findSetModeDifficulty: document.getElementById('findSetModeDifficulty'),
+          findSetTrialType: document.getElementById('findSetTrialType'),
+          clearSelectionBtn_FindSet: document.getElementById('clearSelectionBtn_FindSet'),
+          showOneTargetHintBtn_FindSet: document.getElementById('showOneTargetHintBtn_FindSet'),
+          showCommonTagsHintBtn_FindSet: document.getElementById('showCommonTagsHintBtn_FindSet'),
+          findSetModeGameButtons: document.getElementById('findSetModeGameButtons'),
+
+          findAllSetsModeN: document.getElementById('findAllSetsModeN'),
+          findAllSetsModeDifficulty: document.getElementById('findAllSetsModeDifficulty'),
+          findAllSetsTrialType: document.getElementById('findAllSetsTrialType'),
+          clearSelectionBtn_FindAllSets: document.getElementById('clearSelectionBtn_FindAllSets'),
+          showHintBtn_FindAllSets: document.getElementById('showHintBtn_FindAllSets'),
+          findAllSetsModeGameButtons: document.getElementById('findAllSetsModeGameButtons'),
+
+          closestFurthestModeM: document.getElementById('closestFurthestModeM'),
+          closestFurthestModeK: document.getElementById('closestFurthestModeK'),
+          closestFurthestTrialType: document.getElementById('closestFurthestTrialType'),
+          memorizationControls_CF: document.getElementById('memorizationControls_CF'),
+          startClosestFurthestRoundsBtn: document.getElementById('startClosestFurthestRoundsBtn'),
+          closestFurthestTopChoiceBtn: document.getElementById('closestFurthestTopChoiceBtn'),
+          closestFurthestBottomChoiceBtn: document.getElementById('closestFurthestBottomChoiceBtn'),
+          showMemorizedBtn_CF: document.getElementById('showMemorizedBtn_CF'),
+          showCandidateTagsBtn_CF: document.getElementById('showCandidateTagsBtn_CF'),
+          closestFurthestModeGameButtons: document.getElementById('closestFurthestModeGameButtons'),
+        };
+
+        this.allImageData = [];
+        this.tagHierarchy = {};
+        this.tagChildren = {};
+        this.historyEntries = [];
+        this.currentGameMode = null;
+        this.currentRoundData = {};
+        this.gameSettings = {};
+        this.activeTimeouts = [];
+        this.stopwatchInterval = null;
+        this.stopwatchStartTime = 0;
+
+        this._initialize();
+      }
+
+      _initialize() {
+        this._loadTagHierarchy();
+        this._loadImagesData();
+        this._loadSettings();
+        this._loadHistory();
+        this._renderHistory();
+        this._setupEventListeners();
+        this._showInitialView();
+      }
+
+      _loadTagHierarchy() {
+        if (typeof getHierarchy1 === 'function') {
+          this.tagHierarchy = getHierarchy1();
+          for (const tag in this.tagHierarchy) {
+            this.tagHierarchy[tag].forEach(parent => {
+              if (!this.tagChildren[parent]) this.tagChildren[parent] = [];
+              if (!this.tagChildren[parent].includes(tag)) this.tagChildren[parent].push(tag);
+            });
+          }
+        } else console.error('getHierarchy1 function is missing.');
+      }
+
+      _loadImagesData() {
+        if (typeof getImages1 === 'function') {
+          this.allImageData = getImages1().map(img => [`images1/${img[0]}.jpg`, img[1], img[2]]);
+        } else console.error('getImages1 function is missing.');
+      }
+
+      _loadSettings() {
+        for (const key in SpotTheFeatures.SETTINGS_KEYS) {
+          const element = this.elements[key];
+          const storageKey = SpotTheFeatures.SETTINGS_KEYS[key];
+          if (element) {
+            const storedValue = localStorage.getItem(storageKey);
+            element.value = storedValue !== null ? storedValue : SpotTheFeatures.DEFAULT_SETTINGS[key];
+            if (element.type === 'number') this._validateNumericInput(element);
+          }
+        }
+      }
+
+      _saveSetting(elementKey) {
+        const element = this.elements[elementKey];
+        const storageKey = SpotTheFeatures.SETTINGS_KEYS[elementKey];
+        if (element && storageKey) {
+          if (element.type === 'number') this._validateNumericInput(element);
+          localStorage.setItem(storageKey, element.value);
+        }
+      }
+
+      _setDefaultSettings() {
+        if (!confirm("Reset all settings to default values?")) return;
+        for (const key in SpotTheFeatures.DEFAULT_SETTINGS) {
+          const element = this.elements[key];
+          const storageKey = SpotTheFeatures.SETTINGS_KEYS[key];
+          if (element && storageKey) {
+            element.value = SpotTheFeatures.DEFAULT_SETTINGS[key];
+            if (element.type === 'number') this._validateNumericInput(element);
+            localStorage.setItem(storageKey, element.value);
+          }
+        }
+        alert("Settings have been reset to default.");
+      }
+
+      _validateNumericInput(input) {
+        if (!input) return;
+        const val = parseInt(input.value || 1);
+        const min = parseInt(input.min || (-Infinity));
+        const max = parseInt(input.max || Infinity);
+        input.value = Math.max(min, Math.min(max, val));
+      }
+
+      _loadHistory() {
+        const stored = localStorage.getItem('stf_mini_history');
+        this.historyEntries = stored ? JSON.parse(stored) : [];
+      }
+
+      _saveHistory() {
+        localStorage.setItem('stf_mini_history', JSON.stringify(this.historyEntries));
+      }
+
+      getStrDateTime(timestamp = null) {
+        let datetimeValue = null;
+        if (timestamp != null) {
+          datetimeValue = new Date((new Date(timestamp).setHours(new Date(timestamp).getHours() - (new Date().getTimezoneOffset() / 60))));
+        }
+        if (datetimeValue == null) {
+          datetimeValue = new Date((new Date().setHours(new Date().getHours() - (new Date().getTimezoneOffset() / 60))));
+        }
+        return datetimeValue.toISOString().replace('T', ' ').replaceAll('-', '.').slice(0, 19);
+      }
+
+      _addHistoryEntry(text) {
+        const strDateTime = this.getStrDateTime();
+        this.historyEntries.unshift(`[${strDateTime}] ${text}`);
+        if (this.historyEntries.length > 50) this.historyEntries.pop();
+        this._saveHistory();
+        this._renderHistory();
+      }
+
+      _renderHistory() {
+        this.elements.historyLog.innerHTML = this.historyEntries.length ?
+          this.historyEntries.map(entry => `<p>${entry}</p>`).join('') :
+          '<p>No game history yet.</p>';
+      }
+
+      _resetHistory() {
+        if (confirm("Permanently delete all game history?")) {
+          this.historyEntries = [];
+          this._saveHistory();
+          this._renderHistory();
+          alert("History has been reset.");
+        }
+      }
+
+      _setupEventListeners() {
+        this.elements.startFindSetModeBtn.addEventListener('click', () => this._modeFindSet_startGame());
+        this.elements.startFindAllSetsModeBtn.addEventListener('click', () => this._modeFindAllSets_startGame());
+        this.elements.startClosestFurthestModeBtn.addEventListener('click', () => this._modeClosestFurthest_startGame());
+        this.elements.stopGameBtn.addEventListener('click', () => this._stopCurrentGame());
+        this.elements.nextBtn.addEventListener('click', () => this._handleNextClick());
+
+        this.elements.defaultSettingsBtn.addEventListener('click', () => this._setDefaultSettings());
+        this.elements.resetHistoryBtn.addEventListener('click', () => this._resetHistory());
+
+        Object.keys(SpotTheFeatures.SETTINGS_KEYS).forEach(key => {
+          if (this.elements[key]) {
+            const eventType = 'input';
+            this.elements[key].addEventListener(eventType, () => this._saveSetting(key));
+          }
+        });
+
+        this.elements.showOneTargetHintBtn_FindSet.addEventListener('click', () => this._modeFindSet_handleShowOneTargetHint());
+        this.elements.showCommonTagsHintBtn_FindSet.addEventListener('click', () => this._modeFindSet_handleShowCommonTagsHint());
+        this.elements.clearSelectionBtn_FindSet.addEventListener('click', () => this._modeFindSet_handleClearSelection());
+        this.elements.clearSelectionBtn_FindAllSets.addEventListener('click', () => this._modeFindAllSets_handleClearSelection());
+        this.elements.showHintBtn_FindAllSets.addEventListener('click', () => this._modeFindAllSets_handleShowHint());
+        this.elements.startClosestFurthestRoundsBtn.addEventListener('click', () => this._modeClosestFurthest_proceedToRounds());
+        this.elements.closestFurthestTopChoiceBtn.addEventListener('click', () => this._modeClosestFurthest_handleAnswer(true));
+        this.elements.closestFurthestBottomChoiceBtn.addEventListener('click', () => this._modeClosestFurthest_handleAnswer(false));
+        this.elements.showMemorizedBtn_CF.addEventListener('click', () => this._modeClosestFurthest_handleShowMemorizedHint());
+        this.elements.showCandidateTagsBtn_CF.addEventListener('click', () => this._modeClosestFurthest_handleShowCandidateTagsHint());
+      }
+
+      _showInitialView() {
+        this._clearAllTimeouts();
+        this._resetStopwatch();
+        this.elements.initialControls.classList.remove('hidden');
+        this.elements.settingsArea.classList.remove('hidden');
+        this.elements.history.classList.remove('hidden');
+        this.elements.stopGameBtn.classList.add('hidden');
+        this.elements.gameBoard.innerHTML = '';
+        this.elements.gameBoard.className = 'game-board';
+        this.elements.gameArea.className = 'game-area';
+        this.elements.gameArea.classList.add('hidden');
+        this._updateStatusMessage('');
+        this.elements.gameStatusInfo.classList.add('hidden');
+        this.currentGameMode = null;
+      }
+
+      _showGameView() {
+        this._clearAllTimeouts();
+        this.elements.initialControls.classList.add('hidden');
+        this.elements.settingsArea.classList.add('hidden');
+        this.elements.gameArea.classList.remove('hidden');
+        this.elements.history.classList.add('hidden');
+        this.elements.stopGameBtn.classList.remove('hidden');
+        this._updateStatusMessage('');
+        this.elements.gameStatusInfo.classList.add('hidden');
+        this.elements.gameStatusInfo.textContent = '';
+        this.elements.gameArea.className = 'game-area';
+        this.elements.gameBoard.className = 'game-board';
+
+        ['findSetModeGameButtons', 'findAllSetsModeGameButtons', 'closestFurthestModeGameButtons', 'memorizationControls_CF', 'nextBtn']
+          .forEach(elId => this.elements[elId].classList.add('hidden'));
+
+        [this.elements.showOneTargetHintBtn_FindSet, this.elements.showCommonTagsHintBtn_FindSet,
+        this.elements.clearSelectionBtn_FindAllSets, this.elements.showHintBtn_FindAllSets,
+        this.elements.closestFurthestTopChoiceBtn, this.elements.closestFurthestBottomChoiceBtn,
+        this.elements.showMemorizedBtn_CF, this.elements.showCandidateTagsBtn_CF,
+        this.elements.startClosestFurthestRoundsBtn]
+          .forEach(btn => btn.disabled = false);
+      }
+
+      _updateStatusMessage(message, type = '') {
+        this.elements.statusMessage.textContent = message;
+        this.elements.statusMessage.className = 'status-message';
+        if (type === 'correct') this.elements.statusMessage.classList.add('status-correct');
+        if (type === 'incorrect') this.elements.statusMessage.classList.add('status-incorrect');
+      }
+
+      _renderItemDisplay(itemData, itemIndex, trialType, clickHandler, isAnalysisView = false) {
+        const itemContainer = document.createElement('div');
+        itemContainer.classList.add('item-display');
+        itemContainer.dataset.itemIndex = itemIndex;
+
+        const imgEl = document.createElement('img');
+        imgEl.classList.add('item-image');
+        imgEl.src = itemData[0];
+        imgEl.alt = itemData[1];
+
+        const descEl = document.createElement('p');
+        descEl.classList.add('item-description');
+        descEl.textContent = itemData[1];
+
+        const tagsEl = document.createElement('p');
+        tagsEl.classList.add('item-tags');
+        tagsEl.textContent = `Tags: ${itemData[2].join(', ')}`;
+
+        itemContainer.append(imgEl, descEl, tagsEl);
+
+        if (isAnalysisView) {
+          itemContainer.classList.add('state-analysis');
+        } else {
+          const displayDescOnly = trialType === 'description' || (trialType === 'random_item' && Math.random() < 0.5);
+          itemContainer.classList.add(displayDescOnly ? 'state-desc-only' : 'state-image-only');
+        }
+        if (clickHandler) itemContainer.addEventListener('click', clickHandler);
+        return itemContainer;
+      }
+
+      _displayItemsWithFullDetails(itemsToDisplay) {
+        this.elements.gameBoard.innerHTML = '';
+        this.elements.gameBoard.className = 'game-board';
+        itemsToDisplay.forEach((itemData, index) => {
+          if (itemData) {
+            const itemElement = this._renderItemDisplay(itemData, index, 'image', null, true);
+            this.elements.gameBoard.appendChild(itemElement);
+          }
+        });
+        Object.values(this.elements)
+          .filter(el => el.tagName === 'BUTTON' && el.parentElement.id?.endsWith('GameButtons'))
+          .forEach(btn => btn.disabled = true);
+      }
+
+      _shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      _selectRandomItems(source, count, exclusions = []) {
+        const exclusionPaths = new Set(exclusions.map(ex => ex[0]));
+        const available = source.filter(item => !exclusionPaths.has(item[0]));
+        if (available.length < count) {
+          console.warn(`Requested ${count}, available ${available.length}`);
+          return this._shuffleArray([...available]).slice(0, Math.min(count, available.length));
+        }
+        return this._shuffleArray([...available]).slice(0, count);
+      }
+
+      _getCombinations(array, k) {
+        const result = [];
+        function backtrack(startIndex, currentCombination) {
+          if (currentCombination.length === k) { result.push([...currentCombination]); return; }
+          for (let i = startIndex; i < array.length; i++) {
+            currentCombination.push(array[i]);
+            backtrack(i + 1, currentCombination);
+            currentCombination.pop();
+          }
+        }
+        backtrack(0, []);
+        return result;
+      }
+
+      _getAllTagsWithHierarchy(imageTags) {
+        if (!imageTags?.length) return new Set();
+        const allTags = new Set(imageTags);
+        const toProcess = [...imageTags];
+        while (toProcess.length > 0) {
+          const currentTag = toProcess.pop();
+          if (this.tagHierarchy[currentTag]) {
+            this.tagHierarchy[currentTag].forEach(parent => {
+              if (!allTags.has(parent)) { allTags.add(parent); toProcess.push(parent); }
+            });
+          }
+        }
+        return allTags;
+      }
+
+      _getCommonTags(group, useHierarchy = true) {
+        if (!group?.length) return [];
+        const expandedTags = group.map(imgData => useHierarchy ? this._getAllTagsWithHierarchy(imgData[2]) : new Set(imgData[2]));
+        if (!expandedTags.length) return [];
+        let common = new Set(expandedTags[0]);
+        for (let i = 1; i < expandedTags.length; i++) {
+          common = new Set([...common].filter(tag => expandedTags[i].has(tag)));
+          if (!common.size) break;
+        }
+        return [...common];
+      }
+
+      _getUniqueTags(group, useHierarchy = true) {
+        const allUniqueTags = new Set();
+        group.forEach(imgData => {
+          const tags = useHierarchy ? this._getAllTagsWithHierarchy(imgData[2]) : new Set(imgData[2]);
+          tags.forEach(tag => allUniqueTags.add(tag));
+        });
+        return allUniqueTags;
+      }
+
+      _startStopwatch() {
+        this._stopStopwatch();
+        this.stopwatchStartTime = Date.now();
+        this.elements.stopwatchDisplay.textContent = '00:00:00';
+        this.elements.stopwatchDisplayContainer.classList.remove('hidden');
+        this.stopwatchInterval = setInterval(() => this._updateStopwatchDisplay(), 1000);
+      }
+
+      _stopStopwatch() { clearInterval(this.stopwatchInterval); this.stopwatchInterval = null; }
+
+      _resetStopwatch() {
+        this._stopStopwatch();
+        this.elements.stopwatchDisplay.textContent = '00:00:00';
+        this.elements.stopwatchDisplayContainer.classList.add('hidden');
+      }
+
+      _updateStopwatchDisplay() {
+        const elapsed = Math.floor((Date.now() - this.stopwatchStartTime) / 1000);
+        const h = String(Math.floor(elapsed / 3600)).padStart(2, '0');
+        const m = String(Math.floor((elapsed % 3600) / 60)).padStart(2, '0');
+        const s = String(elapsed % 60).padStart(2, '0');
+        this.elements.stopwatchDisplay.textContent = `${h}:${m}:${s}`;
+      }
+
+      _clearAllTimeouts() { this.activeTimeouts.forEach(clearTimeout); this.activeTimeouts = []; }
+      _addTimeout(callback, delay) { this.activeTimeouts.push(setTimeout(callback, delay)); }
+
+      _handleNextClick() {
+        this.elements.gameBoard.className = 'game-board';
+        this.elements.gameBoard.innerHTML = '';
+        if (this.currentGameMode === 'findSet') this._modeFindSet_generateNewRound();
+        else if (this.currentGameMode === 'findAllSets') this._modeFindAllSets_generateNewRound();
+        else if (this.currentGameMode === 'closestFurthest') {
+          if (this.currentRoundData.currentRoundNum >= this.gameSettings.K) this._modeClosestFurthest_startGame();
+          else this._modeClosestFurthest_generateNewRound();
+        }
+      }
+
+      _stopCurrentGame() {
+        this._clearAllTimeouts();
+        this._stopStopwatch();
+        let summary = "Game stopped early.";
+        const time = this.elements.stopwatchDisplay.textContent;
+
+        if (this.currentGameMode === 'findSet') summary = `[Find Set] (N=${this.gameSettings.N}, Diff=${this.gameSettings.difficulty}) stopped. Time: ${time}`;
+        else if (this.currentGameMode === 'findAllSets') {
+          const { found = 0, total = 0 } = this.currentRoundData;
+          summary = `[Find All Sets] (N=${this.gameSettings.N}, Diff=${this.gameSettings.difficulty}) stopped. Found ${found}/${total}. Time: ${time}`;
+        } else if (this.currentGameMode === 'closestFurthest') {
+          const rounds = this.elements.nextBtn.classList.contains('hidden') ? this.currentRoundData.currentRoundNum : (this.currentRoundData.currentRoundNum - 1);
+          const score = `${this.currentRoundData.correctAnswers || 0} / ${Math.max(0, rounds || 0)}`;
+          summary = `[Closest/Furthest] (M=${this.gameSettings.M}, K=${this.gameSettings.K}) score: ${score}. Stopped. Time: ${time}`;
+        }
+        if (this.currentGameMode) this._addHistoryEntry(summary);
+        this._showInitialView();
+      }
+
+      _modeFindSet_startGame() {
+        this.currentGameMode = 'findSet';
+        this.gameSettings = {
+          N: parseInt(this.elements.findSetModeN.value),
+          difficulty: this.elements.findSetModeDifficulty.value,
+          trialType: this.elements.findSetTrialType.value
+        };
+        if (this.allImageData.length < this.gameSettings.N) {
+          this._updateStatusMessage(`Not enough images for N=${this.gameSettings.N}`, 'incorrect'); return;
+        }
+        this.currentRoundData = { selectedIndices: new Set(), targetIndices: [], commonTags: [], hintsUsed: {} };
+        this._showGameView();
+        this.elements.gameArea.classList.add('game-mode-findSet');
+        this.elements.findSetModeGameButtons.classList.remove('hidden');
+        this._modeFindSet_generateNewRound();
+        this._startStopwatch();
+      }
+
+      // todo
+      _modeFindSet_generateNewRound() {
+        const { N, difficulty } = this.gameSettings;
+        this._updateStatusMessage(`[Find Set] Select items with common features.`);
+        this.elements.gameBoard.innerHTML = '';
+        this.currentRoundData.selectedIndices.clear();
+        this.currentRoundData.hintsUsed = { oneTarget: 0, commonTags: false, hintedTargetIndices: new Set() };
+        this.elements.showOneTargetHintBtn_FindSet.disabled = false;
+        this.elements.showCommonTagsHintBtn_FindSet.disabled = false;
+        this.elements.clearSelectionBtn_FindSet.disabled = false;
+        this.elements.nextBtn.classList.add('hidden');
+
+        let targetGroup, distractors;
+        const maxAttempts = 5000;
+        this.currentRoundData.displayedItems = [];
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+          const potentialTargetSize = Math.floor(Math.random() * (N - 2)) + 2; // 2 to N-1
+          const allItems = this._selectRandomItems(this.allImageData, N);
+          if (allItems.length < N) { this._stopCurrentGame(); return; }
+
+          targetGroup = allItems.slice(0, potentialTargetSize);
+          distractors = allItems.slice(potentialTargetSize);
+          const commonInTarget = this._getCommonTags(targetGroup);
+
+          if (!commonInTarget.length) continue;
+
+          const minTagsInTargetImg = Math.min(...targetGroup.map(img => this._getAllTagsWithHierarchy(img[2]).size)) || 1;
+          const percCommon = (commonInTarget.length / minTagsInTargetImg) * 100;
+
+          let diffMatch = false;
+          if (difficulty === 'easy') diffMatch = percCommon >= 75;
+          else if (difficulty === 'medium') diffMatch = percCommon >= 50 && percCommon < 75;
+          else diffMatch = commonInTarget.length >= 1;
+
+          if (!diffMatch) continue;
+
+          const distractorsValid = distractors.every(d => {
+            const dTags = this._getAllTagsWithHierarchy(d[2]);
+            return ![...commonInTarget].every(tTag => dTags.has(tTag));
+          });
+
+          if (distractorsValid) {
+            this.currentRoundData.displayedItems = this._shuffleArray([...targetGroup, ...distractors]);
+            this.currentRoundData.targetIndices = this.currentRoundData.displayedItems
+              .map((item, i) => targetGroup.some(tgItem => tgItem[0] === item[0]) ? i : -1)
+              .filter(i => i !== -1).sort((a, b) => a - b);
+            this.currentRoundData.commonTags = commonInTarget;
+            break;
+          }
+          if (attempt === maxAttempts - 1) {
+            this.currentRoundData.displayedItems = allItems;
+            this.currentRoundData.targetIndices = Array.from({ length: potentialTargetSize }, (_, i) => i);
+            this.currentRoundData.commonTags = this._getCommonTags(allItems.slice(0, potentialTargetSize));
+          }
+        }
+        this._modeFindSet_renderBoard();
+      }
+
+      _modeFindSet_renderBoard() {
+        this.elements.gameBoard.innerHTML = '';
+        this.currentRoundData.displayedItems.forEach((item, i) => {
+          const itemEl = this._renderItemDisplay(item, i, this.gameSettings.trialType, (e) => this._modeFindSet_handleItemClick(e));
+          this.elements.gameBoard.appendChild(itemEl);
+        });
+      }
+
+      _modeFindSet_handleItemClick(event) {
+        const itemEl = event.currentTarget;
+        const index = parseInt(itemEl.dataset.itemIndex);
+        if (this.currentRoundData.selectedIndices.has(index)) {
+          this.currentRoundData.selectedIndices.delete(index);
+          itemEl.classList.remove('selected');
+        } else {
+          this.currentRoundData.selectedIndices.add(index);
+          itemEl.classList.add('selected');
+        }
+        this._modeFindSet_checkWinCondition();
+      }
+
+      // todo
+      _modeFindSet_checkWinCondition() {
+        const selected = [...this.currentRoundData.selectedIndices].sort((a, b) => a - b);
+        const target = this.currentRoundData.targetIndices;
+        if (selected.length === target.length && selected.every((val, i) => val === target[i])) {
+          this._updateStatusMessage('Correct! Review items. Click Next.', 'correct');
+          this._displayItemsWithFullDetails(this.currentRoundData.displayedItems);
+          this.elements.nextBtn.classList.remove('hidden');
+          [this.elements.showOneTargetHintBtn_FindSet, this.elements.showCommonTagsHintBtn_FindSet].forEach(b => b.disabled = true);
+          const tagsInDisplay = this._getUniqueTags(this.currentRoundData.displayedItems).size;
+          this._addHistoryEntry(`[Find Set] Correct. Common: "${this.currentRoundData.commonTags.join(', ') || 'N/A'}". Tags in display: ${tagsInDisplay}. Time: ${this.elements.stopwatchDisplay.textContent}`);
+        }
+      }
+
+      _modeFindSet_handleClearSelection(showMessage = true) {
+        this.currentRoundData.selectedIndices.clear();
+        this.elements.gameBoard.querySelectorAll('.item-display.selected').forEach(el => el.classList.remove('selected'));
+      }
+
+      // todo
+      _modeFindSet_handleShowOneTargetHint() {
+        if (this.currentRoundData.hintsUsed.oneTarget >= this.currentRoundData.targetIndices.length) {
+          alert('All target items hinted or no targets.'); this.elements.showOneTargetHintBtn_FindSet.disabled = true; return;
+        }
+        const availableTargets = this.currentRoundData.targetIndices.filter(idx => !this.currentRoundData.hintsUsed.hintedTargetIndices.has(idx));
+        if (!availableTargets.length) { alert('No more unique hints.'); this.elements.showOneTargetHintBtn_FindSet.disabled = true; return; }
+
+        const hintIndex = availableTargets[Math.floor(Math.random() * availableTargets.length)];
+        const hintedItem = this.currentRoundData.displayedItems[hintIndex];
+        alert(`Hint: "${hintedItem[1]}". Tags: ${hintedItem[2].join(', ')}`);
+        this.currentRoundData.hintsUsed.oneTarget++;
+        this.currentRoundData.hintsUsed.hintedTargetIndices.add(hintIndex);
+        if (this.currentRoundData.hintsUsed.oneTarget >= this.currentRoundData.targetIndices.length) this.elements.showOneTargetHintBtn_FindSet.disabled = true;
+      }
+
+      // todo
+      _modeFindSet_handleShowCommonTagsHint() {
+        if (this.currentRoundData.hintsUsed.commonTags) { alert("Common tags hint already used."); return; }
+        const tagsToShow = this.currentRoundData.commonTags.filter(t => t !== "Entity").join(', ') || this.currentRoundData.commonTags.join(', ') || "None defined";
+        alert(`Hint: Common features include: "${tagsToShow}"`);
+        this.currentRoundData.hintsUsed.commonTags = true;
+        this.elements.showCommonTagsHintBtn_FindSet.disabled = true;
+      }
+
+      _modeFindAllSets_startGame() {
+        this.currentGameMode = 'findAllSets';
+        this.gameSettings = {
+          N: parseInt(this.elements.findAllSetsModeN.value),
+          difficulty: this.elements.findAllSetsModeDifficulty.value,
+          trialType: this.elements.findAllSetsTrialType.value
+        };
+        if (this.allImageData.length < this.gameSettings.N) {
+          this._updateStatusMessage(`Not enough images for N=${this.gameSettings.N}`, 'incorrect'); return;
+        }
+        this.currentRoundData = { selectedIndices: new Set(), allSets: [], foundSets: new Set(), hintsUsed: {} };
+        this._showGameView();
+        this.elements.gameArea.classList.add('game-mode-findAllSets');
+        this.elements.findAllSetsModeGameButtons.classList.remove('hidden');
+        this.elements.gameStatusInfo.classList.remove('hidden');
+        this._modeFindAllSets_generateNewRound();
+        this._startStopwatch();
+      }
+
+      // todo
+      _modeFindAllSets_generateNewRound() {
+        this.elements.gameBoard.innerHTML = '';
+        this.currentRoundData.selectedIndices.clear();
+        this.currentRoundData.allSets = [];
+        this.currentRoundData.foundSets.clear();
+        this.currentRoundData.hintsUsed = { showHint: false };
+        this.elements.showHintBtn_FindAllSets.disabled = false;
+        this.elements.clearSelectionBtn_FindAllSets.disabled = false;
+        this.elements.nextBtn.classList.add('hidden');
+
+        this.currentRoundData.displayedItems = this._selectRandomItems(this.allImageData, this.gameSettings.N);
+        if (this.currentRoundData.displayedItems.length < this.gameSettings.N) { this._stopCurrentGame(); return; }
+
+        this._modeFindAllSets_calculateAllPossibleSets();
+        if (!this.currentRoundData.allSets.length) {
+          this._updateStatusMessage("No valid sets found with current items/difficulty. Try again.", "incorrect");
+          this._addTimeout(() => this._modeFindAllSets_generateNewRound(), 3000);
+          return;
+        }
+        this._modeFindAllSets_renderBoard();
+        this._modeFindAllSets_updateStatus();
+      }
+
+      // todo
+      _modeFindAllSets_calculateAllPossibleSets() {
+        const { N, difficulty } = this.gameSettings;
+        const indices = Array.from({ length: this.currentRoundData.displayedItems.length }, (_, i) => i);
+        this.currentRoundData.allSets = [];
+        for (let size = 2; size <= N; size++) {
+          this._getCombinations(indices, size).forEach(combo => {
+            const group = combo.map(idx => this.currentRoundData.displayedItems[idx]);
+            let commonTags = this._getCommonTags(group);
+            let passes = false;
+            if (difficulty === 'easy') passes = commonTags.filter(t => t !== "Entity").length >= 2;
+            else if (difficulty === 'medium') passes = commonTags.filter(t => t !== "Entity").length >= 1;
+            else passes = commonTags.length >= 1;
+            if (passes) this.currentRoundData.allSets.push({ indices: combo.sort((a, b) => a - b), commonTags });
+          });
+        }
+      }
+
+      _modeFindAllSets_renderBoard() {
+        this.elements.gameBoard.innerHTML = '';
+        this.currentRoundData.displayedItems.forEach((item, i) => {
+          const itemEl = this._renderItemDisplay(item, i, this.gameSettings.trialType, e => this._modeFindAllSets_handleItemClick(e));
+          this.elements.gameBoard.appendChild(itemEl);
+        });
+      }
+
+      _modeFindAllSets_handleItemClick(event) {
+        const itemEl = event.currentTarget;
+        const index = parseInt(itemEl.dataset.itemIndex);
+        if (this.currentRoundData.selectedIndices.has(index)) {
+          this.currentRoundData.selectedIndices.delete(index);
+          itemEl.classList.remove('selected');
+        } else {
+          this.currentRoundData.selectedIndices.add(index);
+          itemEl.classList.add('selected');
+        }
+        this._modeFindAllSets_checkCurrentSelection();
+      }
+
+      // todo
+      _modeFindAllSets_checkCurrentSelection() {
+        const selected = Array.from(this.currentRoundData.selectedIndices).sort((a, b) => a - b);
+        if (selected.length < 2) { this._modeFindAllSets_updateStatus(); return; }
+        const selectedKey = selected.join(',');
+
+        if (this.currentRoundData.foundSets.has(selectedKey)) {
+          this._updateStatusMessage("Set already found.", 'incorrect');
+          this._addTimeout(() => this._modeFindAllSets_updateStatus(), 2000);
+          return;
+        }
+        const matchedSet = this.currentRoundData.allSets.find(s => s.indices.join(',') === selectedKey);
+        if (matchedSet) {
+          this.currentRoundData.foundSets.add(selectedKey);
+          this._updateStatusMessage(`Correct! Set found. Common: ${matchedSet.commonTags.join(', ') || 'N/A'}`, 'correct');
+          selected.forEach(idx => {
+            const el = this.elements.gameBoard.querySelector(`.item-display[data-item-index="${idx}"]`);
+            if (el) { el.classList.add('correct-set-temp'); this._addTimeout(() => el.classList.remove('correct-set-temp'), 1500); }
+          });
+          this._modeFindAllSets_handleClearSelection(false);
+          this._modeFindAllSets_updateStatus();
+          if (this.currentRoundData.foundSets.size === this.currentRoundData.allSets.length) {
+            this._stopStopwatch();
+            this._updateStatusMessage(`All ${this.currentRoundData.allSets.length} sets found! Review items. Click Next.`, 'correct');
+            this._displayItemsWithFullDetails(this.currentRoundData.displayedItems);
+            this.elements.nextBtn.classList.remove('hidden');
+            [this.elements.showHintBtn_FindAllSets, this.elements.clearSelectionBtn_FindAllSets].forEach(b => b.disabled = true);
+            this._addHistoryEntry(`[Find All Sets] All ${this.currentRoundData.allSets.length} sets found. Time: ${this.elements.stopwatchDisplay.textContent}`);
+          }
+        } else {
+          this._updateStatusMessage("Not a valid set.", 'incorrect');
+          this._addTimeout(() => this._modeFindAllSets_updateStatus(), 2000);
+        }
+      }
+
+      _modeFindAllSets_handleClearSelection(showMessage = true) {
+        this.currentRoundData.selectedIndices.clear();
+        this.elements.gameBoard.querySelectorAll('.item-display.selected').forEach(el => el.classList.remove('selected'));
+        if (showMessage && !this.elements.gameBoard.querySelector('.state-analysis')) {
+          this._updateStatusMessage("Selection cleared.");
+          this._modeFindAllSets_updateStatus();
+        }
+      }
+
+      // todo
+      _modeFindAllSets_handleShowHint() {
+        if (this.currentRoundData.hintsUsed.showHint) { alert("Hint already used."); return; }
+        const unfound = this.currentRoundData.allSets.filter(s => !this.currentRoundData.foundSets.has(s.indices.join(',')));
+        if (!unfound.length) { alert("All sets found!"); this.elements.showHintBtn_FindAllSets.disabled = true; return; }
+        const hintSet = unfound[Math.floor(Math.random() * unfound.length)];
+        alert(`Hint: An unfound set of ${hintSet.indices.length} items has common tags: "${hintSet.commonTags.join(', ')}"`);
+        this.currentRoundData.hintsUsed.showHint = true;
+      }
+
+      _modeFindAllSets_updateStatus() {
+        const baseMsg = `Found ${this.currentRoundData.foundSets.size} / ${this.currentRoundData.allSets.length} sets.`;
+        if (this.elements.statusMessage.textContent.includes("cleared") ||
+          this.elements.statusMessage.textContent.includes("already found") ||
+          this.elements.statusMessage.textContent.includes("Not a valid set") ||
+          this.elements.statusMessage.textContent === "") {
+          this._updateStatusMessage(baseMsg + " Select items to form a set.");
+        }
+        this.elements.gameStatusInfo.textContent = baseMsg;
+      }
+
+      _modeClosestFurthest_startGame() {
+        this.currentGameMode = 'closestFurthest';
+        this.gameSettings = {
+          M: parseInt(this.elements.closestFurthestModeM.value),
+          K: parseInt(this.elements.closestFurthestModeK.value),
+          trialType: this.elements.closestFurthestTrialType.value
+        };
+        if (this.allImageData.length < this.gameSettings.M + 3) {
+          this._updateStatusMessage(`Not enough images (need ${this.gameSettings.M + 3})`, 'incorrect'); return;
+        }
+        this.currentRoundData = { memorizedItems: [], memorizedTags: new Set(), roundNum: 0, correctAnswers: 0, hintsUsed: {} };
+        this._showGameView();
+        this.elements.gameArea.classList.add('game-mode-closestFurthest');
+        this.elements.memorizationControls_CF.classList.remove('hidden');
+        this._modeClosestFurthest_startMemorizationPhase();
+      }
+
+      // todo
+      _modeClosestFurthest_startMemorizationPhase() {
+        this._updateStatusMessage(`[Closest/Furthest] Memorize ${this.gameSettings.M} item${this.gameSettings.M > 1 ? "s" : ""}.`);
+        this.elements.gameBoard.innerHTML = '';
+        this.currentRoundData.memorizedItems = this._selectRandomItems(this.allImageData, this.gameSettings.M);
+        if (this.currentRoundData.memorizedItems.length < this.gameSettings.M) { this._stopCurrentGame(); return; }
+        this.currentRoundData.memorizedTags = this._getUniqueTags(this.currentRoundData.memorizedItems);
+        this.currentRoundData.memorizedItems.forEach((item, i) => {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'memorized-hint-item';
+          const itemEl = this._renderItemDisplay(item, i, this.gameSettings.trialType, null, true);
+          itemEl.style.cursor = 'default';
+          wrapper.appendChild(itemEl);
+          this.elements.gameBoard.appendChild(wrapper);
+        });
+      }
+
+      _modeClosestFurthest_proceedToRounds() {
+        this.elements.memorizationControls_CF.classList.add('hidden');
+        this.elements.closestFurthestModeGameButtons.classList.remove('hidden');
+        this.elements.gameBoard.innerHTML = '';
+        this._updateStatusMessage("Rounds begin now.");
+        this._startStopwatch();
+        this._modeClosestFurthest_generateNewRound();
+      }
+
+      // todo
+      _modeClosestFurthest_countCommonTagsWithMemorized(itemData) {
+        if (!itemData || !itemData[2] || !this.currentRoundData.memorizedTags) return 0;
+        const itemExpandedTags = this._getAllTagsWithHierarchy(itemData[2]);
+        return [...itemExpandedTags].filter(tag => this.currentRoundData.memorizedTags.has(tag)).length;
+      }
+
+      // todo
+      _modeClosestFurthest_generateNewRound() {
+        this.currentRoundData.roundNum++;
+        if (this.currentRoundData.roundNum > this.gameSettings.K) { this._modeClosestFurthest_endGameSession(); return; }
+
+        this.currentRoundData.isCloserQuestion = Math.random() < 0.5;
+        const qText = this.currentRoundData.isCloserQuestion ? "Which item is closer?" : "Which item is further?";
+        this._updateStatusMessage(`Round ${this.currentRoundData.roundNum}/${this.gameSettings.K}. ${qText}`);
+        const btnText = this.currentRoundData.isCloserQuestion ? "Closer" : "Further";
+        this.elements.closestFurthestTopChoiceBtn.textContent = `Top Item is ${btnText}`;
+        this.elements.closestFurthestBottomChoiceBtn.textContent = `Bottom Item is ${btnText}`;
+
+        this.elements.gameBoard.innerHTML = '';
+        this.elements.nextBtn.classList.add('hidden');
+        [this.elements.closestFurthestTopChoiceBtn, this.elements.closestFurthestBottomChoiceBtn].forEach(b => {
+          b.disabled = false; b.className = b.className.replace(/ btn-feedback-\w+/g, '');
+        });
+        this.currentRoundData.hintsUsed.candidateTagsThisRound = false;
+        this.elements.showCandidateTagsBtn_CF.disabled = false;
+        this.elements.showMemorizedBtn_CF.disabled = !!this.currentRoundData.hintsUsed.showMemorized;
+
+        let candA, candB, closenessA, closenessB;
+        const maxAttempts = 50;
+        for (let i = 0; i < maxAttempts; ++i) {
+          const [item1, item2] = this._selectRandomItems(this.allImageData, 2, this.currentRoundData.memorizedItems);
+          if (!item1 || !item2) { this._stopCurrentGame(); return; }
+          candA = item1; candB = item2;
+          closenessA = this._modeClosestFurthest_countCommonTagsWithMemorized(candA);
+          closenessB = this._modeClosestFurthest_countCommonTagsWithMemorized(candB);
+          if (closenessA !== closenessB) break;
+          if (i === maxAttempts - 1) console.warn("CF: Equal closeness after max attempts.");
+        }
+        this.currentRoundData.topItem = Math.random() < 0.5 ? candA : candB;
+        this.currentRoundData.bottomItem = this.currentRoundData.topItem === candA ? candB : candA;
+
+        [this.currentRoundData.topItem, this.currentRoundData.bottomItem].forEach((item, i) => {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'candidate-item';
+          const itemEl = this._renderItemDisplay(item, i, this.gameSettings.trialType, null, false);
+          wrapper.appendChild(itemEl);
+          this.elements.gameBoard.appendChild(wrapper);
+        });
+      }
+
+      // todo
+      _modeClosestFurthest_handleAnswer(choseTop) {
+        [this.elements.closestFurthestTopChoiceBtn, this.elements.closestFurthestBottomChoiceBtn, this.elements.showCandidateTagsBtn_CF].forEach(b => b.disabled = true);
+        const topCloseness = this._modeClosestFurthest_countCommonTagsWithMemorized(this.currentRoundData.topItem);
+        const bottomCloseness = this._modeClosestFurthest_countCommonTagsWithMemorized(this.currentRoundData.bottomItem);
+
+        let isCorrectChoice;
+        if (topCloseness === bottomCloseness) isCorrectChoice = false;
+        else if (this.currentRoundData.isCloserQuestion) isCorrectChoice = choseTop ? topCloseness > bottomCloseness : bottomCloseness > topCloseness;
+        else isCorrectChoice = choseTop ? topCloseness < bottomCloseness : bottomCloseness < topCloseness;
+
+        const feedbackCloseness = `(Top: ${topCloseness}, Bottom: ${bottomCloseness} common tags with memorized).`;
+        if (isCorrectChoice) {
+          this.currentRoundData.correctAnswers++;
+          this._updateStatusMessage(`Correct! ${feedbackCloseness} Click Next.`, 'correct');
+          (choseTop ? this.elements.closestFurthestTopChoiceBtn : this.elements.closestFurthestBottomChoiceBtn).classList.add('btn-feedback-correct');
+        } else {
+          let reason = topCloseness === bottomCloseness ? "Equally close/distant." :
+            (this.currentRoundData.isCloserQuestion ? (topCloseness > bottomCloseness ? "Top was closer." : "Bottom was closer.") :
+              (topCloseness < bottomCloseness ? "Top was further." : "Bottom was further."));
+          this._updateStatusMessage(`Incorrect. ${reason} ${feedbackCloseness} Click Next.`, 'incorrect');
+          (choseTop ? this.elements.closestFurthestTopChoiceBtn : this.elements.closestFurthestBottomChoiceBtn).classList.add('btn-feedback-incorrect');
+          if (topCloseness !== bottomCloseness) {
+            const actualTargetIsTop = this.currentRoundData.isCloserQuestion ? (topCloseness > bottomCloseness) : (topCloseness < bottomCloseness);
+            (actualTargetIsTop ? this.elements.closestFurthestTopChoiceBtn : this.elements.closestFurthestBottomChoiceBtn).classList.add('btn-feedback-correct');
+          }
+        }
+        this.elements.nextBtn.classList.remove('hidden');
+        this.elements.gameBoard.querySelectorAll('.item-display').forEach(el => {
+          el.classList.remove('state-image-only', 'state-desc-only');
+          el.classList.add('state-analysis');
+          el.style.height = 'auto';
+        });
+      }
+
+      // todo
+      _modeClosestFurthest_endGameSession() {
+        this._stopStopwatch();
+        const score = `${this.currentRoundData.correctAnswers} / ${this.gameSettings.K}`;
+        this._updateStatusMessage(`[Closest/Furthest] Rounds Over! Score: ${score}. Review items. Click Next to restart.`, 'correct');
+        const analysisItems = [this.currentRoundData.topItem, this.currentRoundData.bottomItem, ...this.currentRoundData.memorizedItems].filter(Boolean);
+        this._displayItemsWithFullDetails(analysisItems);
+        this._addHistoryEntry(`[Closest/Furthest] Score: ${score}. Memorized tags: ${this.currentRoundData.memorizedTags.size}. Time: ${this.elements.stopwatchDisplay.textContent}`);
+        [this.elements.closestFurthestTopChoiceBtn, this.elements.closestFurthestBottomChoiceBtn, this.elements.showMemorizedBtn_CF, this.elements.showCandidateTagsBtn_CF].forEach(b => b.disabled = true);
+        this.elements.nextBtn.classList.remove('hidden');
+      }
+
+      // todo
+      _modeClosestFurthest_handleShowMemorizedHint() {
+        if (this.currentRoundData.hintsUsed.showMemorized) { alert("Memorized items hint already used."); return; }
+        const tempBoard = document.createElement('div');
+        tempBoard.innerHTML = '<h3>Memorized Items (Hint):</h3>';
+        this.currentRoundData.memorizedItems.forEach((item, i) => {
+          const wrapper = document.createElement('div');
+          wrapper.className = 'memorized-hint-item';
+          const itemEl = this._renderItemDisplay(item, i, this.gameSettings.trialType, null, true);
+          itemEl.style.cursor = 'default';
+          wrapper.appendChild(itemEl);
+          tempBoard.appendChild(wrapper);
+        });
+        const origBoard = this.elements.gameBoard.innerHTML;
+        const origStatus = this.elements.statusMessage.textContent;
+        this.elements.gameBoard.innerHTML = tempBoard.innerHTML;
+        this._updateStatusMessage("Showing memorized items. Make your choice or click Next to continue the round.");
+        this.currentRoundData.hintsUsed.showMemorized = true;
+        this.elements.showMemorizedBtn_CF.disabled = true;
+
+        const restore = () => {
+          if (this.elements.gameBoard.innerHTML === tempBoard.innerHTML) {
+            this.elements.gameBoard.innerHTML = origBoard;
+            this._updateStatusMessage(origStatus);
+          }
+          this.elements.nextBtn.removeEventListener('click', restoreListener);
+          this.elements.closestFurthestTopChoiceBtn.removeEventListener('click', restoreListener);
+          this.elements.closestFurthestBottomChoiceBtn.removeEventListener('click', restoreListener);
+        };
+        const restoreListener = () => restore();
+        ['nextBtn', 'closestFurthestTopChoiceBtn', 'closestFurthestBottomChoiceBtn'].forEach(elId => {
+          this.elements[elId].addEventListener('click', restoreListener, { once: true });
+        });
+      }
+
+      _modeClosestFurthest_handleShowCandidateTagsHint() {
+        if (this.currentRoundData.hintsUsed.candidateTagsThisRound) { alert("Candidate tags hint used this round."); return; }
+        if (!this.currentRoundData.topItem || !this.currentRoundData.bottomItem) { alert("No candidates loaded."); return; }
+        alert(`Top Item ("${this.currentRoundData.topItem[1]}") Tags: ${this.currentRoundData.topItem[2].join(', ') || "None"}\n\nBottom Item ("${this.currentRoundData.bottomItem[1]}") Tags: ${this.currentRoundData.bottomItem[2].join(', ') || "None"}`);
+        this.currentRoundData.hintsUsed.candidateTagsThisRound = true;
+        this.elements.showCandidateTagsBtn_CF.disabled = true;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => new SpotTheFeatures());
+  </script>
+</body>
+
+</html>
